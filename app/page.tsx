@@ -6,7 +6,6 @@ import RemitentePanel from "@/components/RemitentePanel";
 
 export default function Home() {
   const [tab, setTab] = useState<"cliente" | "remitente">("cliente");
-
   return (
     <div className="wrap">
       <header>

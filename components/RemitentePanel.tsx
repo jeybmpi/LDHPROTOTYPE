@@ -33,11 +33,9 @@ export default function RemitentePanel() {
     return (
       <div>
         <label htmlFor={k}>{label} *</label>
-        <input
-          id={k} value={form[k]} inputMode={opts.inputMode}
+        <input id={k} value={form[k]} inputMode={opts.inputMode}
           className={errors[k] ? "bad" : ""} aria-invalid={!!errors[k]}
-          onChange={(e) => set(k, e.target.value)}
-        />
+          onChange={(e) => set(k, e.target.value)} />
         {errors[k] && <div className="ferr">{errors[k]}</div>}
       </div>
     );
@@ -63,10 +61,7 @@ export default function RemitentePanel() {
     setPaying(true);
     try {
       const pay = await simulatePayment(card);
-      if (!pay.approved || !pay.reference) {
-        setPayError(pay.reason ?? "El pago no fue aprobado.");
-        return;
-      }
+      if (!pay.approved || !pay.reference) { setPayError(pay.reason ?? "El pago no fue aprobado."); return; }
       const res = await fetch("/api/shipments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +70,7 @@ export default function RemitentePanel() {
       const json = (await res.json()) as CreateResult | ApiError;
       if (!res.ok) {
         const err = json as ApiError;
-        setPayError(err.error);
+        setPayError(err.detail ? `${err.error} (${err.detail})` : err.error);
         if (err.errors) { setErrors(err.errors as Errors); setStep("datos"); }
         return;
       }
@@ -233,9 +228,7 @@ export default function RemitentePanel() {
             {errors.service && <div className="ferr">{errors.service}</div>}
           </div>
         </div>
-        {parsed.ok && (
-          <p className="hint">Total: {formatCOP(amount)} · Entrega estimada: {formatDate(estimate)}</p>
-        )}
+        {parsed.ok && <p className="hint">Total: {formatCOP(amount)} · Entrega estimada: {formatDate(estimate)}</p>}
         {hasErrors && <div className="msg err" role="status">Completa los campos resaltados en rojo.</div>}
         <div className="row" style={{ marginTop: 16 }}>
           <button className="btn" onClick={continuar}>Continuar al pago</button>

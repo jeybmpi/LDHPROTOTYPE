@@ -5,6 +5,7 @@ import type { ApiError, ShipmentStatus, TrackResult } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 const GUIA = /^LG-\d{4}-\d{8}$/;
+const NOT_FOUND = "Número de guía inexistente. Revisa que esté completo e intenta con otro.";
 
 interface Row {
   guia: string;
@@ -20,14 +21,7 @@ export async function GET(
   { params }: { params: { guia: string } },
 ): Promise<NextResponse<TrackResult | ApiError>> {
   const guia = decodeURIComponent(params.guia).trim().toUpperCase();
-
-  // BR-06: si la guía no existe o es inválida, se informa de inmediato
-  if (!GUIA.test(guia)) {
-    return NextResponse.json(
-      { error: "Número de guía inexistente. Revisa que esté completo e intenta con otro." },
-      { status: 404 },
-    );
-  }
+  if (!GUIA.test(guia)) return NextResponse.json({ error: NOT_FOUND }, { status: 404 });
 
   try {
     const { data, error } = await supabaseServer()
@@ -38,24 +32,17 @@ export async function GET(
       .maybeSingle<Row>();
 
     if (error) throw error;
-    if (!data) {
-      return NextResponse.json(
-        { error: "Número de guía inexistente. Revisa que esté completo e intenta con otro." },
-        { status: 404 },
-      );
-    }
+    if (!data) return NextResponse.json({ error: NOT_FOUND }, { status: 404 });
 
     return NextResponse.json({
       guia: data.guia,
       status: data.status,
       estimatedDelivery: data.estimated_delivery,
       destCity: data.dest_city,
-      events: data.shipment_events.map((e) => ({
-        status: e.status, location: e.location, note: e.note, at: e.created_at,
-      })),
+      events: data.shipment_events.map((e) => ({ status: e.status, location: e.location, note: e.note, at: e.created_at })),
     });
   } catch (e) {
-    console.error("GET /api/track", e);
+    console.error("GET /api/track FALLÓ:", e);
     return NextResponse.json({ error: "No pudimos consultar el envío. Intenta de nuevo." }, { status: 500 });
   }
 }

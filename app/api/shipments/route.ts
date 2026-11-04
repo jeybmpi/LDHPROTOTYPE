@@ -8,6 +8,15 @@ export const dynamic = "force-dynamic";
 
 const PAYMENT_REF = /^SIM-[A-Z0-9]{8}$/;
 
+function describe(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === "object") {
+    const o = e as { message?: string; details?: string; hint?: string; code?: string };
+    return [o.code, o.message, o.details, o.hint].filter(Boolean).join(" | ") || JSON.stringify(e);
+  }
+  return String(e);
+}
+
 /** Crea un envío después de un pago simulado aprobado y devuelve la guía. */
 export async function POST(req: Request): Promise<NextResponse<CreateResult | ApiError>> {
   let body: Record<string, unknown>;
@@ -17,7 +26,6 @@ export async function POST(req: Request): Promise<NextResponse<CreateResult | Ap
     return NextResponse.json({ error: "Solicitud no válida" }, { status: 400 });
   }
 
-  // BR-01 / BR-03: validación obligatoria en el servidor
   const v = validateShipment(body);
   if (!v.ok) {
     return NextResponse.json(
@@ -68,7 +76,12 @@ export async function POST(req: Request): Promise<NextResponse<CreateResult | Ap
 
     return NextResponse.json({ guia: shipment.guia as string, estimatedDelivery, amount, receiptNoticeAt });
   } catch (e) {
-    console.error("POST /api/shipments", e);
-    return NextResponse.json({ error: "No pudimos registrar el envío. Intenta de nuevo." }, { status: 500 });
+    const detail = describe(e);
+    console.error("POST /api/shipments FALLÓ:", detail);
+    // Con DEBUG_API=1 en Vercel, el error real se muestra en pantalla (quítalo después de depurar).
+    return NextResponse.json(
+      { error: "No pudimos registrar el envío. Intenta de nuevo.", detail: process.env.DEBUG_API === "1" ? detail : undefined },
+      { status: 500 },
+    );
   }
 }

@@ -28,7 +28,7 @@ input.bad,select.bad{border-color:var(--err);background:var(--errbg)}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .row input{flex:1;min-width:200px}
-.msg{border-radius:8px;padding:12px 14px;margin-top:14px;font-weight:500}
+.msg{border-radius:8px;padding:12px 14px;margin-top:14px;font-weight:500;overflow-wrap:anywhere}
 .msg.ok{background:var(--okbg);color:var(--ok)}
 .msg.err{background:var(--errbg);color:var(--err)}
 .msg.info{background:var(--infobg);color:var(--info)}

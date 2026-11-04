@@ -1,10 +1,8 @@
 -- LDH Tracking · esquema para Supabase (SQL Editor → New query → Run)
-
 create sequence if not exists guia_seq start 1;
 
 create table if not exists public.shipments (
   id                uuid primary key default gen_random_uuid(),
-  -- BR-02: guía única en todo el sistema
   guia              text not null unique default (
                       'LG-' || to_char(now() at time zone 'America/Bogota', 'YYYY') ||
                       '-'   || lpad(nextval('guia_seq')::text, 8, '0')),
@@ -27,7 +25,7 @@ create table if not exists public.shipments (
                     check (status in ('Pendiente de recolección','En tránsito','En reparto',
                                       'Entregado','Con incidencia','Devuelto')),
   estimated_delivery date not null,
-  receipt_notice_at  timestamptz not null,   -- cuándo se enviaría el mensaje de "recibido"
+  receipt_notice_at  timestamptz not null,
   created_at         timestamptz not null default now()
 );
 
@@ -39,15 +37,13 @@ create table if not exists public.shipment_events (
   note        text,
   created_at  timestamptz not null default now()
 );
-
 create index if not exists shipment_events_idx on public.shipment_events (shipment_id, created_at);
 
--- Seguridad: RLS activado y SIN políticas = el navegador (clave anon) no puede leer ni escribir.
--- Solo las rutas API de Next.js, con la service role key, acceden a los datos.
+-- RLS activado y SIN políticas: solo la service_role key (rutas /api) puede acceder.
 alter table public.shipments       enable row level security;
 alter table public.shipment_events enable row level security;
 
--- Datos de demostración: guía LG-2026-00000001 (como en el prototipo)
+-- Datos de demostración: guía LG-2026-00000001
 with s as (
   insert into public.shipments
     (guia, sender_name, sender_doc, sender_phone, origin_address, origin_city,
@@ -68,5 +64,4 @@ from s, (values
   ('En reparto','Bodega Bogotá','Salió a entregar','2026-09-03 12:15-05')
 ) as v(status, location, note, at);
 
--- La siguiente guía real será LG-AAAA-00000002
 select setval('guia_seq', greatest((select last_value from guia_seq), 1));

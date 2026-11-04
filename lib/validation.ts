@@ -1,9 +1,7 @@
 import type { Service, ShipmentInput } from "./types";
 
 export type Errors = Partial<Record<keyof ShipmentInput, string>>;
-export type ValidationResult =
-  | { ok: true; data: ShipmentInput }
-  | { ok: false; errors: Errors };
+export type ValidationResult = { ok: true; data: ShipmentInput } | { ok: false; errors: Errors };
 
 const PHONE = /^[0-9+\s-]{7,15}$/;
 const DOC = /^[0-9]{5,12}$/;
@@ -45,22 +43,19 @@ export function validateShipment(raw: unknown): ValidationResult {
   const weightRaw = String(r.weightKg ?? "").trim().replace(",", ".");
   const weightKg = Number(weightRaw);
   if (!weightRaw) errors.weightKg = "Campo obligatorio";
-  else if (!Number.isFinite(weightKg) || weightKg < 0.1 || weightKg > 50)
-    errors.weightKg = "Entre 0,1 y 50 kg";
+  else if (!Number.isFinite(weightKg) || weightKg < 0.1 || weightKg > 50) errors.weightKg = "Entre 0,1 y 50 kg";
 
   const service = str("service") as Service;
   if (!service) errors.service = "Elige un servicio";
   else if (!SERVICES.includes(service)) errors.service = "Servicio no válido";
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
-
   return {
     ok: true,
     data: {
       senderName, senderDoc, senderPhone, originAddress, originCity,
       recipientName, recipientDoc, recipientPhone, destAddress, destCity,
-      weightKg: Math.round(weightKg * 100) / 100,
-      service,
+      weightKg: Math.round(weightKg * 100) / 100, service,
     },
   };
 }

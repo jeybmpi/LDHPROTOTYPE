@@ -12,10 +12,7 @@ export default function ClientePanel() {
 
   async function consultar() {
     setResult(null);
-    if (!guia.trim()) {
-      setError("Escribe un número de guía para consultar.");
-      return;
-    }
+    if (!guia.trim()) { setError("Escribe un número de guía para consultar."); return; }
     setError(null);
     setLoading(true);
     try {
@@ -39,24 +36,19 @@ export default function ClientePanel() {
       <div className="card">
         <label htmlFor="guia">Número de guía</label>
         <div className="row">
-          <input
-            id="guia" value={guia} placeholder="LG-2026-00000001" autoComplete="off"
+          <input id="guia" value={guia} placeholder="LG-2026-00000001" autoComplete="off"
             onChange={(e) => setGuia(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") void consultar(); }}
-          />
+            onKeyDown={(e) => { if (e.key === "Enter") void consultar(); }} />
           <button className="btn" onClick={() => void consultar()} disabled={loading}>
             {loading ? "Consultando…" : "Consultar envío"}
           </button>
         </div>
-
         <div aria-live="polite">
           {error && <div className="msg err" role="status">{error}</div>}
           {result && (
             <>
               <div className="msg ok" role="status">Guía encontrada</div>
-              <p style={{ margin: "16px 0 0" }}>
-                Estado actual: <span className="badge">{result.status}</span>
-              </p>
+              <p style={{ margin: "16px 0 0" }}>Estado actual: <span className="badge">{result.status}</span></p>
               <ul className="tl">
                 {[...result.events].reverse().map((ev, i) => (
                   <li key={i} className={ev.status === "Con incidencia" ? "inc" : ""}>

@@ -33,21 +33,18 @@ export function estimateDelivery(service: Service, now: Date = new Date()): stri
 }
 
 export function formatCOP(n: number): string {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency", currency: "COP", maximumFractionDigits: 0,
-  }).format(n);
+  return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
 }
 
 export function formatDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
-  return new Intl.DateTimeFormat("es-CO", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  }).format(new Date(y, m - 1, d));
+  return new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    .format(new Date(y, m - 1, d));
 }
 
 export function formatDateTime(iso: string): string {
   return new Intl.DateTimeFormat("es-CO", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Bogota",
+    day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+    hour12: false, timeZone: "America/Bogota",
   }).format(new Date(iso));
 }
