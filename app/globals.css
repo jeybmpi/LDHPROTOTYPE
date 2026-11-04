@@ -1,0 +1,51 @@
+:root{--bg:#f2f4f3;--surface:#fff;--ink:#12202e;--muted:#5b6b78;--line:#d5dce0;--brand:#12202e;--brand-ink:#fff;--accent:#d9480f;--ok:#1b7a4b;--okbg:#e4f3ea;--err:#b3261e;--errbg:#fbe9e7;--info:#1d4e89;--infobg:#e6eff9;--dot:#c3ccd2;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1620;--surface:#16212d;--ink:#e8edf1;--muted:#9aaab6;--line:#2a3948;--brand:#e8edf1;--brand-ink:#0e1620;--accent:#ff8a4c;--ok:#5fd394;--okbg:#14301f;--err:#ff8a80;--errbg:#3a1b19;--info:#8ab8f0;--infobg:#142a42;--dot:#3a4b5a}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.01em}
+.logo span{color:var(--accent)}
+.tabs{display:inline-flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.tabs button{border:0;background:transparent;color:var(--ink);padding:9px 18px;font:inherit;font-weight:700;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1{font-size:clamp(28px,6vw,44px);line-height:1.1;margin:8px 0 6px;letter-spacing:-.02em;font-weight:800}
+h2{font-size:20px;margin:0 0 12px}
+.lead{color:var(--muted);margin:0 0 20px;max-width:56ch}
+.muted{color:var(--muted);margin:14px 0 2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:500;font-size:14px;margin-bottom:4px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px}
+input.bad,select.bad{border-color:var(--err);background:var(--errbg)}
+.ferr{color:var(--err);font-size:13px;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid .full{grid-column:1/-1}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:11px 22px;font:inherit;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row input{flex:1;min-width:200px}
+.msg{border-radius:8px;padding:12px 14px;margin-top:14px;font-weight:500}
+.msg.ok{background:var(--okbg);color:var(--ok)}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.info{background:var(--infobg);color:var(--info)}
+.hint{color:var(--muted);font-size:13px;margin:10px 0 0}
+.badge{display:inline-block;border-radius:99px;padding:3px 12px;font-weight:700;font-size:14px;background:var(--brand);color:var(--brand-ink)}
+.guia{font-size:clamp(22px,5vw,32px);font-weight:800;letter-spacing:.02em;margin:0 0 12px;word-break:break-all}
+.summary{margin:16px 0;display:grid;gap:8px}
+.summary div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.summary dt{color:var(--muted)}
+.summary dd{margin:0;font-weight:700;text-align:right}
+.summary .total dd{font-size:20px}
+.tl{list-style:none;margin:18px 0 0;padding:0}
+.tl li{position:relative;padding:0 0 18px 34px}
+.tl li::before{content:"";position:absolute;left:9px;top:22px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl .dot{position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;font-size:12px;display:grid;place-items:center}
+.tl li.est .dot{background:var(--surface);border:2px dashed var(--dot);color:transparent}
+.tl .t{font-weight:700}
+.tl .d{color:var(--muted);font-size:14px}
+.tl li.inc .dot{background:var(--err)}
